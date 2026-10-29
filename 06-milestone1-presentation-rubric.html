@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rúbrica — Presentación Fase 1 (EDA + Data Storytelling)</title>
+<style>
+  :root{
+    --bg:#faf9f5;
+    --ink:#14110D;
+    --ink-soft:#4a423a;
+    --muted:#8A7F70;
+    --line:#e4ddd0;
+    --panel:#ffffff;
+    --accent:#E08A22;
+    --accent-soft:#f7e3c5;
+    --teal:#35857A;
+    --teal-soft:#dcefec;
+    --bad:#b5432f;
+    --bad-soft:#f6e0db;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:40px 24px 80px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  header{margin-bottom:36px;}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  h1{
+    font-size:clamp(28px,4vw,42px);
+    line-height:1.1;
+    margin:0 0 12px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--ink-soft);font-size:17px;max-width:70ch;margin:0;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 28px;
+    margin-bottom:24px;
+  }
+  .card h2{
+    font-size:19px;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card h2 .num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    color:var(--accent);
+    border:1px solid var(--accent-soft);
+    background:var(--accent-soft);
+    border-radius:999px;
+    padding:2px 10px;
+  }
+
+  .four-points{list-style:none;margin:0;padding:0;display:grid;gap:10px;}
+  .four-points li{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:12px 14px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:15px;
+  }
+  .four-points .n{
+    flex:0 0 auto;
+    font-family:"JetBrains Mono",monospace;
+    font-weight:600;
+    color:var(--accent);
+    min-width:18px;
+  }
+
+  .timing-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.timing-grid{grid-template-columns:1fr;}}
+  .timing-box{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    background:var(--bg);
+  }
+  .timing-box .who{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .timing-box .range{font-size:28px;font-weight:700;color:var(--ink);}
+  .timing-box .range span{font-size:15px;font-weight:400;color:var(--ink-soft);}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+  }
+
+  .weight-table td:first-child, .weight-table th:first-child{width:46%;}
+  .weight-table td.pts{font-weight:700;font-family:"JetBrains Mono",monospace;color:var(--accent);white-space:nowrap;}
+  .weight-table tr:last-child td{border-bottom:none;font-weight:700;}
+
+  .crit{margin-bottom:28px;}
+  .crit-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    gap:12px;flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .crit-head h3{margin:0;font-size:17px;}
+  .crit-head .badge{
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    color:var(--teal);
+    background:var(--teal-soft);
+    border-radius:999px;
+    padding:3px 12px;
+    white-space:nowrap;
+  }
+  .crit-desc{color:var(--ink-soft);font-size:14px;margin:0 0 12px;}
+
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media (max-width:800px){.levels{grid-template-columns:repeat(2,1fr);}}
+  .level{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    background:var(--bg);
+    font-size:13px;
+  }
+  .level .lvl-name{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin-bottom:4px;
+    display:flex;justify-content:space-between;
+  }
+  .level.excelente{border-top:3px solid var(--teal);}
+  .level.bueno{border-top:3px solid var(--accent);}
+  .level.suficiente{border-top:3px solid #b98b3e;}
+  .level.insuficiente{border-top:3px solid var(--bad);}
+  .level .lvl-name b{color:var(--ink);}
+  .level .lvl-pts{color:var(--muted);}
+
+  .callout{
+    border-left:3px solid var(--accent);
+    background:var(--accent-soft);
+    padding:14px 18px;
+    border-radius:0 10px 10px 0;
+    font-size:14px;
+    margin-top:10px;
+  }
+  .callout.bad{border-left-color:var(--bad);background:var(--bad-soft);}
+  .callout strong{display:block;margin-bottom:4px;}
+
+  .not-graded{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;}
+  .not-graded li{
+    font-size:13px;
+    padding:6px 12px;
+    background:var(--bg);
+    border:1px dashed var(--line);
+    border-radius:999px;
+    color:var(--ink-soft);
+  }
+
+  .sheet{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 28px;
+    background:var(--panel);
+  }
+  .sheet-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  @media (max-width:640px){.sheet-row{grid-template-columns:1fr;}}
+  .field label{
+    display:block;
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .field .line{
+    border-bottom:1px solid var(--ink-soft);
+    height:26px;
+  }
+  .score-table th,.score-table td{padding:8px 10px;}
+  .score-table input[type=text]{
+    width:100%;border:none;border-bottom:1px solid var(--line);
+    background:transparent;font-size:14px;padding:4px 2px;font-family:inherit;
+  }
+  .score-table td.crit-name{font-weight:600;}
+  .score-table td.max{font-family:"JetBrains Mono",monospace;color:var(--muted);text-align:center;}
+  .total-row td{font-weight:700;border-top:2px solid var(--ink);border-bottom:none;padding-top:14px;}
+
+  footer{
+    margin-top:36px;
+    font-size:13px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .card,.sheet{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Fase 1 del proyecto · 20% de la nota de proyecto (60%)</div>
+    <h1>Rúbrica — Presentación de EDA y Data Storytelling</h1>
+    <p class="subtitle">
+      Cada estudiante (o equipo de dos) presenta su propio dataset: qué es, qué significan
+      sus columnas, y 3+ insights genuinos respaldados por gráficos. El objetivo de esta
+      entrega es <strong>data storytelling</strong>, no rigor estadístico — lo que se evalúa
+      es si conocen su data lo suficientemente bien como para hablar de ella con soltura.
+    </p>
+  </header>
+
+  <div class="card">
+    <h2><span class="num">1</span> La presentación debe responder</h2>
+    <ol class="four-points">
+      <li><span class="n">1</span> ¿Qué es este dataset y por qué lo eligieron?</li>
+      <li><span class="n">2</span> ¿Qué significan las variables (columnas)? ¿Alguna sorpresa al verlas por primera vez?</li>
+      <li><span class="n">3</span> 3 o más insights genuinos, cada uno respaldado por un gráfico o una vista de los datos ya trabajada (filtrada / agrupada).</li>
+      <li><span class="n">4</span> Un "so what" — por qué le importaría a alguien este insight.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Tiempos</h2>
+    <div class="timing-grid">
+      <div class="timing-box">
+        <div class="who">Individual</div>
+        <div class="range">5 – 7 <span>min</span></div>
+      </div>
+      <div class="timing-box">
+        <div class="who">Equipo de 2</div>
+        <div class="range">8 – 10 <span>min</span></div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Cómo aplicar el tiempo</strong>
+      Quedarse muy por debajo del mínimo suele significar que faltó desarrollar insights o el
+      "so what"; pasarse notablemente del máximo resta puntos en la fila "Presentación /
+      manejo del tiempo" de la tabla de niveles más abajo, sin importar qué tan buena sea la data.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Distribución de puntos (100 pts = el 20% de esta fase)</h2>
+    <table class="weight-table">
+      <thead>
+        <tr><th>Criterio</th><th>Peso</th><th>Puntos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Comprensión de los datos y las columnas</td><td>25%</td><td class="pts">25</td></tr>
+        <tr><td>Visualización</td><td>15%</td><td class="pts">15</td></tr>
+        <tr><td>Calidad de los insights</td><td>20%</td><td class="pts">20</td></tr>
+        <tr><td>Código pusheado en GitHub</td><td>30%</td><td class="pts">30</td></tr>
+        <tr><td>Presentación / storytelling / manejo del tiempo</td><td>10%</td><td class="pts">10</td></tr>
+        <tr><td>Total</td><td></td><td class="pts">100</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CRITERIO 1 -->
+  <div class="card crit">
+    <div class="crit-head">
+      <h3>1. Comprensión de los datos y las columnas</h3>
+      <span class="badge">25 pts</span>
+    </div>
+    <p class="crit-desc">
+      Esto es lo más importante de esta entrega. Puede explicar, con sus propias palabras,
+      qué significa cada variable clave — no solo leer el nombre de la columna. Distingue el
+      tipo de dato que Python/Excel le asigna del tipo de dato que realmente es (ej. una
+      columna numérica que en realidad es categórica, como una clave musical codificada
+      0–11). Menciona algo raro o inesperado que encontró al explorar (duplicados, rangos
+      fuera de lo esperado, valores faltantes).
+    </p>
+    <div class="levels">
+      <div class="level excelente"><div class="lvl-name"><b>Excelente</b><span class="lvl-pts">22–25</span></div>Explica cada variable clave con soltura, identifica correctamente tipos de dato reales vs. inferidos, y señala al menos una sorpresa concreta encontrada en su propia data.</div>
+      <div class="level bueno"><div class="lvl-name"><b>Bueno</b><span class="lvl-pts">17–21</span></div>Explica la mayoría de las variables correctamente; identifica tipos de dato en general bien, pero se le escapa algún matiz (ej. no nota una columna categórica disfrazada de número).</div>
+      <div class="level suficiente"><div class="lvl-name"><b>Suficiente</b><span class="lvl-pts">12–16</span></div>Puede leer el nombre/descripción de las columnas pero no demuestra entender el significado real; no distingue tipos de dato.</div>
+      <div class="level insuficiente"><div class="lvl-name"><b>Insuficiente</b><span class="lvl-pts">&lt;12</span></div>No puede explicar qué significan sus variables sin leer literalmente la diapositiva o el dataset original.</div>
+    </div>
+  </div>
+
+  <!-- CRITERIO 2 -->
+  <div class="card crit">
+    <div class="crit-head">
+      <h3>2. Visualización</h3>
+      <span class="badge">15 pts</span>
+    </div>
+    <p class="crit-desc">
+      El tipo de gráfico corresponde a la pregunta que se está respondiendo (barras para
+      conteos por categoría, histograma para distribución, dispersión para relación entre dos
+      variables, etc.). Gráficos legibles: ejes con etiquetas, títulos, sin ruido visual
+      innecesario.
+    </p>
+    <div class="levels">
+      <div class="level excelente"><div class="lvl-name"><b>Excelente</b><span class="lvl-pts">13–15</span></div>Cada gráfico es el tipo correcto para su pregunta y está bien etiquetado; se entiende sin explicación adicional.</div>
+      <div class="level bueno"><div class="lvl-name"><b>Bueno</b><span class="lvl-pts">10–12</span></div>Los gráficos son mayormente apropiados, pero falta algún título/etiqueta o hay un tipo de gráfico mal elegido.</div>
+      <div class="level suficiente"><div class="lvl-name"><b>Suficiente</b><span class="lvl-pts">7–9</span></div>Gráficos genéricos o poco legibles; no siempre corresponden a la pregunta que dicen responder.</div>
+      <div class="level insuficiente"><div class="lvl-name"><b>Insuficiente</b><span class="lvl-pts">&lt;7</span></div>Gráficos ausentes, ilegibles o irrelevantes para los insights presentados.</div>
+    </div>
+  </div>
+
+  <!-- CRITERIO 3 -->
+  <div class="card crit">
+    <div class="crit-head">
+      <h3>3. Calidad de los insights</h3>
+      <span class="badge">20 pts</span>
+    </div>
+    <p class="crit-desc">
+      3+ insights específicos y no obvios (no solo "aquí hay un gráfico"), cada uno con al
+      menos un "so what" — por qué debería importarle a alguien. Un insight fuerte suena como
+      la historia del "volume knob" de la clase: dos variables que se mueven juntas de forma
+      inesperada, con una cifra que lo respalda.
+    </p>
+    <div class="levels">
+      <div class="level excelente"><div class="lvl-name"><b>Excelente</b><span class="lvl-pts">17–20</span></div>3+ insights específicos, no obvios, cada uno con cifra/gráfico de respaldo y un "so what" claro.</div>
+      <div class="level bueno"><div class="lvl-name"><b>Bueno</b><span class="lvl-pts">13–16</span></div>3+ insights presentes, pero alguno es genérico o le falta el "por qué importa".</div>
+      <div class="level suficiente"><div class="lvl-name"><b>Suficiente</b><span class="lvl-pts">9–12</span></div>Menos de 3 insights, o son básicamente descripciones de gráficos sin interpretación.</div>
+      <div class="level insuficiente"><div class="lvl-name"><b>Insuficiente</b><span class="lvl-pts">&lt;9</span></div>No hay insights reales, solo gráficos sueltos sin narrativa.</div>
+    </div>
+  </div>
+
+  <!-- CRITERIO 4: GITHUB -->
+  <div class="card crit">
+    <div class="crit-head">
+      <h3>4. Código pusheado en GitHub</h3>
+      <span class="badge">30 pts</span>
+    </div>
+    <p class="crit-desc">
+      El código (notebook) que genera las gráficas y/o los insights mostrados en la
+      presentación debe estar commiteado y pusheado a su repositorio de GitHub — se revisa el
+      repo, no solo lo que se muestra en pantalla. Al revisar el notebook también se evalúa la
+      limpieza/wrangling detrás de los insights (filtrado, <code>groupby</code>, manejo de
+      duplicados y faltantes), ya que ahí es donde realmente se ve ese trabajo. Recordar: el
+      código puede estar 100% asistido por Copilot (política del curso); lo que se evalúa
+      aquí es que exista, esté en su repo, y corresponda a lo presentado — no originalidad
+      del código.
+    </p>
+    <div class="levels">
+      <div class="level excelente"><div class="lvl-name"><b>Excelente</b><span class="lvl-pts">26–30</span></div>Notebook pusheado y visible en el repo, corresponde exactamente a los gráficos/insights presentados, con wrangling claro (duplicados/missing/rangos revisados) e historial de commits que muestra trabajo progresivo (no un solo commit la noche anterior).</div>
+      <div class="level bueno"><div class="lvl-name"><b>Bueno</b><span class="lvl-pts">20–25</span></div>Notebook pusheado y corresponde a lo presentado, pero con wrangling superficial o poco historial de commits (ej. un solo commit grande).</div>
+      <div class="level suficiente"><div class="lvl-name"><b>Suficiente</b><span class="lvl-pts">14–19</span></div>Hay código en el repo, pero incompleto, desordenado, sin evidencia real de limpieza, o no genera exactamente lo mostrado en la presentación.</div>
+      <div class="level insuficiente"><div class="lvl-name"><b>Insuficiente</b><span class="lvl-pts">&lt;14</span></div>No hay código pusheado en GitHub al momento de la presentación, o no tiene relación con lo presentado.</div>
+    </div>
+    <div class="callout">
+      <strong>Nota</strong>
+      Esto es distinto (y se suma) al 5% de "Setup &amp; Process" de la Fase 0, que evalúa la
+      higiene del repo a lo largo del semestre. Aquí se evalúa específicamente que el código
+      detrás de esta presentación exista y esté en GitHub.
+    </div>
+  </div>
+
+  <!-- CRITERIO 5 -->
+  <div class="card crit">
+    <div class="crit-head">
+      <h3>5. Presentación / storytelling / manejo del tiempo</h3>
+      <span class="badge">10 pts</span>
+    </div>
+    <p class="crit-desc">
+      Narrativa clara (contexto → variables → insights → so what), se mantiene dentro del
+      tiempo asignado según sea individual o equipo, y puede responder preguntas sobre sus
+      propias decisiones (por qué eligió este dataset, por qué ese gráfico).
+    </p>
+    <div class="levels">
+      <div class="level excelente"><div class="lvl-name"><b>Excelente</b><span class="lvl-pts">9–10</span></div>Narrativa clara y ordenada, dentro del tiempo, responde preguntas con soltura.</div>
+      <div class="level bueno"><div class="lvl-name"><b>Bueno</b><span class="lvl-pts">7–8</span></div>Narrativa entendible, ligeramente fuera de tiempo o duda al responder preguntas.</div>
+      <div class="level suficiente"><div class="lvl-name"><b>Suficiente</b><span class="lvl-pts">5–6</span></div>Presentación desordenada o notablemente fuera de tiempo (muy por debajo del mínimo o por encima del máximo).</div>
+      <div class="level insuficiente"><div class="lvl-name"><b>Insuficiente</b><span class="lvl-pts">&lt;5</span></div>No se entiende la narrativa o no puede responder preguntas básicas sobre su propio trabajo.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">✕</span> Explícitamente NO se evalúa</h2>
+    <ul class="not-graded">
+      <li>Significancia estadística</li>
+      <li>Uso avanzado de pandas</li>
+      <li>Originalidad o elegancia del código</li>
+      <li>Que el código haya sido escrito "a mano" vs. con Copilot</li>
+    </ul>
+  </div>
+
+  <!-- HOJA DE EVALUACIÓN -->
+  <div class="sheet">
+    <h2 style="margin-top:0;">Hoja de evaluación</h2>
+    <div class="sheet-row">
+      <div class="field"><label>Nombre(s)</label><div class="line"></div></div>
+      <div class="field"><label>Individual / Equipo de 2</label><div class="line"></div></div>
+    </div>
+    <div class="sheet-row">
+      <div class="field"><label>Dataset</label><div class="line"></div></div>
+      <div class="field"><label>Link al repo de GitHub</label><div class="line"></div></div>
+    </div>
+    <div class="sheet-row">
+      <div class="field"><label>Tiempo objetivo</label><div class="line"></div></div>
+      <div class="field"><label>Tiempo real</label><div class="line"></div></div>
+    </div>
+
+    <table class="score-table">
+      <thead>
+        <tr><th>Criterio</th><th style="text-align:center;">Máx</th><th>Puntaje / comentario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="crit-name">Comprensión de los datos y columnas</td><td class="max">25</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Visualización</td><td class="max">15</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Calidad de los insights</td><td class="max">20</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Código pusheado en GitHub</td><td class="max">30</td><td><input type="text"></td></tr>
+        <tr><td class="crit-name">Presentación / tiempo</td><td class="max">10</td><td><input type="text"></td></tr>
+        <tr class="total-row"><td>Total</td><td class="max">100</td><td><input type="text"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Fase 1 — EDA + Data Storytelling · 20% de la nota de proyecto (60% de la nota final).
+    Ver <code>04-project-phases.md</code> para el detalle completo de todas las fases y
+    <code>02-grading.md</code> para la ponderación general del curso.
+  </footer>
+
+</div>
+</body>
+</html>
